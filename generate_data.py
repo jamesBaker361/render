@@ -16,6 +16,25 @@ bpy.context.scene.render.resolution_x = 512  # Width
 bpy.context.scene.render.resolution_y = 512  # Height
 bpy.context.scene.render.resolution_percentage = 25  # Render at full resolution
 
+#rendering setup
+
+# Set render engine to Cycles
+bpy.context.scene.render.engine = 'CYCLES'
+print("Render engine set to Cycles.")
+
+# Enable GPU rendering
+bpy.context.scene.cycles.device = 'GPU'
+
+# Ensure GPU compute devices are set
+prefs = bpy.context.preferences.addons['cycles'].preferences
+prefs.compute_device_type = 'CUDA'  # Or 'OPTIX' for NVIDIA RTX cards, 'HIP' for AMD
+prefs.get_devices()
+
+print("GPU rendering enabled.")
+#does this work???
+
+
+
 def is_point_inside_bbox(point, obj):
     """
     Check if a given point is inside the bounding box of an object.
