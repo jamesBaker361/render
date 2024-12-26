@@ -10,6 +10,12 @@ import mathutils
 from mathutils import Vector
 from math import radians
 
+base="C:\\Users\\jlbak\\render"
+
+bpy.context.scene.render.resolution_x = 512  # Width
+bpy.context.scene.render.resolution_y = 512  # Height
+bpy.context.scene.render.resolution_percentage = 25  # Render at full resolution
+
 def is_point_inside_bbox(point, obj):
     """
     Check if a given point is inside the bounding box of an object.
@@ -92,19 +98,21 @@ def get_valid_camera_coordinates():
     return x,y,z
 
 n_images=10
-DIR="room_images"
+DIR=os.path.join(base,"image_dir")
 os.makedirs(DIR,exist_ok=True)
 
-CSV_DIR="csv_dir"
+CSV_DIR=os.path.join(base,"csv_dir")
 os.makedirs(CSV_DIR,exist_ok=True)
 
 camera = bpy.data.objects['Camera']  # Replace 'Camera' with your camera's name if different
-
+camera.data.lens = 10
 
 
 random_id="room-"+''.join(random.choices(string.ascii_lowercase, k=5))
+print(os.path.join(CSV_DIR, f"{random_id}.csv"))
 with open(os.path.join(CSV_DIR, f"{random_id}.csv"),"w+") as csvfile:
-    for n in range(1,n_images):
+    n=0
+    while n<n_images:
         x,y,z=get_valid_camera_coordinates()
         camera.location=(x,y,z)
         for azimuthal in range(0,360,45):
@@ -119,3 +127,7 @@ with open(os.path.join(CSV_DIR, f"{random_id}.csv"),"w+") as csvfile:
                 # Render and save the screenshot from the camera's perspective
                 bpy.ops.render.render(write_still=True)
                 csvfile.write(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
+                print(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
+                n+=1
+                if n>=n_images:
+                    break
