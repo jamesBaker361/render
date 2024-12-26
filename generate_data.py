@@ -114,7 +114,7 @@ class LoopError(Exception):
         super().__init__(self.message)
 
 random_id="room-"+''.join(random.choices(string.ascii_lowercase, k=5))
-print(os.path.join(CSV_DIR, f"{random_id}.csv"))
+#print(os.path.join(CSV_DIR, f"{random_id}.csv"))
 with open(os.path.join(CSV_DIR, f"{random_id}.csv"),"w+") as csvfile:
     n=0
     while n<n_images:
@@ -133,7 +133,7 @@ with open(os.path.join(CSV_DIR, f"{random_id}.csv"),"w+") as csvfile:
                     # Render and save the screenshot from the camera's perspective
                     bpy.ops.render.render(write_still=True)
                     csvfile.write(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
-                    print(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
+                    #(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
                     n+=1
                     if n>=n_images:
                         raise LoopError()
