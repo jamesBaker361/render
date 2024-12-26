@@ -96,6 +96,8 @@ def get_valid_camera_coordinates():
     for cube in cube_list:
         if not cube.contains(x,y,z):
             return get_valid_camera_coordinates()
+    if is_point_inside_object((x,y,z)):
+        return get_valid_camera_coordinates()
     return x,y,z
 
 n_images=10
