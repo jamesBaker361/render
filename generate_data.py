@@ -81,7 +81,8 @@ class Cube:
         return True
     
 cube_list=[
-    Cube(0,0,0,5,5,5)
+    Cube(-2,3,0,3,-5,1.5),
+    Cube(-4,1,0,1,-3,1.5)
 ]
 
 def get_valid_camera_coordinates():
