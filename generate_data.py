@@ -107,27 +107,35 @@ os.makedirs(CSV_DIR,exist_ok=True)
 camera = bpy.data.objects['Camera']  # Replace 'Camera' with your camera's name if different
 camera.data.lens = 10
 
+class LoopError(Exception):
+    """A custom exception for specific errors."""
+    def __init__(self, message=""):
+        self.message = message
+        super().__init__(self.message)
 
 random_id="room-"+''.join(random.choices(string.ascii_lowercase, k=5))
 print(os.path.join(CSV_DIR, f"{random_id}.csv"))
 with open(os.path.join(CSV_DIR, f"{random_id}.csv"),"w+") as csvfile:
     n=0
     while n<n_images:
-        x,y,z=get_valid_camera_coordinates()
-        camera.location=(x,y,z)
-        for azimuthal in range(0,360,45):
-            for polar in range(-90,91,45):
-                camera.rotation_euler=(radians(polar), 0, radians(azimuthal))
-                file_name=f"{random_id}_{n}.png"
-                bpy.context.scene.render.filepath = os.path.join(DIR, file_name)
-                
-                bpy.context.scene.render.image_settings.file_format = 'PNG'
-                
+        try:
+            x,y,z=get_valid_camera_coordinates()
+            camera.location=(x,y,z)
+            for azimuthal in range(0,360,45):
+                for polar in range(-90,91,45):
+                    camera.rotation_euler=(radians(polar), 0, radians(azimuthal))
+                    file_name=f"{random_id}_{n}.png"
+                    bpy.context.scene.render.filepath = os.path.join(DIR, file_name)
+                    
+                    bpy.context.scene.render.image_settings.file_format = 'PNG'
+                    
 
-                # Render and save the screenshot from the camera's perspective
-                bpy.ops.render.render(write_still=True)
-                csvfile.write(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
-                print(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
-                n+=1
-                if n>=n_images:
-                    break
+                    # Render and save the screenshot from the camera's perspective
+                    bpy.ops.render.render(write_still=True)
+                    csvfile.write(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
+                    print(f"{file_name},{x},{y},{z},{polar},0,{azimuthal}")
+                    n+=1
+                    if n>=n_images:
+                        raise LoopError()
+        except LoopError:
+            print("all done")
